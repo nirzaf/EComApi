@@ -2,8 +2,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EComApi", "EComApi\EComApi.csproj", "{75FF0C19-4656-4551-8CB0-D5AA5424E85B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestEComApi", "TestEComApi\TestEComApi.csproj", "{4382E232-A7C2-46F8-A1A1-D105AABDBFC9}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -14,9 +12,5 @@ Global
 		{75FF0C19-4656-4551-8CB0-D5AA5424E85B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{75FF0C19-4656-4551-8CB0-D5AA5424E85B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{75FF0C19-4656-4551-8CB0-D5AA5424E85B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4382E232-A7C2-46F8-A1A1-D105AABDBFC9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4382E232-A7C2-46F8-A1A1-D105AABDBFC9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4382E232-A7C2-46F8-A1A1-D105AABDBFC9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4382E232-A7C2-46F8-A1A1-D105AABDBFC9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
