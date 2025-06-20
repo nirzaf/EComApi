@@ -63,10 +63,8 @@ public class ShopItemCategoriesController(EComDbContext context) : ControllerBas
             {
                 return NotFound();
             }
-            else
-            {
-                throw;
-            }
+
+            throw;
         }
 
         return NoContent();
