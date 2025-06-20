@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using EComApi.Models;
 
 namespace EComApi.Data;
@@ -18,8 +19,7 @@ public class EComDbContext(DbContextOptions<EComDbContext> options) : DbContext(
         // Configure many-to-many relationship between ShopItem and ShopItemCategory
         modelBuilder.Entity<ShopItem>()
             .HasMany(si => si.Categories)
-            .WithMany(sic => sic.ShopItems)
-            .UsingEntity(j => j.ToTable("ShopItemCategoryJoin"));
+            .WithMany(sic => sic.ShopItems);
 
         // Configure Order -> Customer relationship
         modelBuilder.Entity<Order>()
