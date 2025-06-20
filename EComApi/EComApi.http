@@ -1,6 +1,135 @@
-@EComApi_HostAddress = http://localhost:5014
+### Test E-Commerce API Endpoints
 
-GET {{EComApi_HostAddress}}/weatherforecast/
-Accept: application/json
+### Get all customers
+GET http://localhost:5014/api/customers
+
+### Get customer by ID
+GET http://localhost:5014/api/customers/1
+
+### Create a new customer
+POST http://localhost:5014/api/customers
+Content-Type: application/json
+
+{
+  "name": "Alice",
+  "surname": "Williams",
+  "email": "alice.williams@example.com"
+}
+
+### Update customer
+PUT http://localhost:5014/api/customers/1
+Content-Type: application/json
+
+{
+  "id": 1,
+  "name": "John Updated",
+  "surname": "Doe Updated",
+  "email": "john.doe.updated@example.com"
+}
+
+### Delete customer
+# DELETE http://localhost:5014/api/customers/3
 
 ###
+
+### Get all categories
+GET http://localhost:5014/api/shopitemcategories
+
+### Get category by ID
+GET http://localhost:5014/api/shopitemcategories/1
+
+### Create a new category
+POST http://localhost:5014/api/shopitemcategories
+Content-Type: application/json
+
+{
+  "title": "Sports",
+  "description": "Sports equipment and accessories"
+}
+
+### Update category
+PUT http://localhost:5014/api/shopitemcategories/1
+Content-Type: application/json
+
+{
+  "id": 1,
+  "title": "Electronics Updated",
+  "description": "Updated description for electronics"
+}
+
+###
+
+### Get all shop items
+GET http://localhost:5014/api/shopitems
+
+### Get shop item by ID
+GET http://localhost:5014/api/shopitems/1
+
+### Create a new shop item
+POST http://localhost:5014/api/shopitems
+Content-Type: application/json
+
+{
+  "title": "Wireless Headphones",
+  "description": "High-quality wireless headphones",
+  "price": 149.99,
+  "categoryIds": [1]
+}
+
+### Update shop item
+PUT http://localhost:5014/api/shopitems/1
+Content-Type: application/json
+
+{
+  "title": "Smartphone Updated",
+  "description": "Latest model smartphone with new features",
+  "price": 799.99,
+  "categoryIds": [1]
+}
+
+###
+
+### Get all orders
+GET http://localhost:5014/api/orders
+
+### Get order by ID
+GET http://localhost:5014/api/orders/1
+
+### Create a new order
+POST http://localhost:5014/api/orders
+Content-Type: application/json
+
+{
+  "customerId": 2,
+  "items": [
+    {
+      "shopItemId": 3,
+      "quantity": 2
+    },
+    {
+      "shopItemId": 4,
+      "quantity": 1
+    }
+  ]
+}
+
+### Update order
+PUT http://localhost:5014/api/orders/1
+Content-Type: application/json
+
+{
+  "customerId": 1,
+  "items": [
+    {
+      "shopItemId": 1,
+      "quantity": 1
+    },
+    {
+      "shopItemId": 5,
+      "quantity": 1
+    }
+  ]
+}
+
+### Delete order
+# DELETE http://localhost:5014/api/orders/2
