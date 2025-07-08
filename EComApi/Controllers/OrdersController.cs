@@ -10,15 +10,8 @@ namespace EComApi.Controllers;
 /// </summary>
 [ApiController]
 [Route("api/[controller]")]
-public class OrdersController : ControllerBase
+public class OrdersController(EComDbContext context) : ControllerBase
 {
-    private readonly EComDbContext _context;
-
-    public OrdersController(EComDbContext context)
-    {
-        _context = context;
-    }
-
     /// <summary>
     /// Get all orders
     /// </summary>
@@ -26,7 +19,7 @@ public class OrdersController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Order>>> GetOrders()
     {
-        return await _context.Orders
+        return await context.Orders
             .Include(o => o.Customer)
             .Include(o => o.Items)
                 .ThenInclude(i => i.ShopItem)
@@ -41,7 +34,7 @@ public class OrdersController : ControllerBase
     [HttpGet("{id}")]
     public async Task<ActionResult<Order>> GetOrder(int id)
     {
-        var order = await _context.Orders
+        var order = await context.Orders
             .Include(o => o.Customer)
             .Include(o => o.Items)
                 .ThenInclude(i => i.ShopItem)
@@ -64,7 +57,7 @@ public class OrdersController : ControllerBase
     public async Task<ActionResult<Order>> PostOrder(OrderDto orderDto)
     {
         // Verify customer exists
-        var customer = await _context.Customers.FindAsync(orderDto.CustomerId);
+        var customer = await context.Customers.FindAsync(orderDto.CustomerId);
         if (customer == null)
         {
             return BadRequest("Customer not found.");
@@ -79,7 +72,7 @@ public class OrdersController : ControllerBase
         // Add order items
         foreach (var itemDto in orderDto.Items)
         {
-            var shopItem = await _context.ShopItems.FindAsync(itemDto.ShopItemId);
+            var shopItem = await context.ShopItems.FindAsync(itemDto.ShopItemId);
             if (shopItem == null)
             {
                 return BadRequest($"Shop item with ID {itemDto.ShopItemId} not found.");
@@ -94,8 +87,8 @@ public class OrdersController : ControllerBase
             order.Items.Add(orderItem);
         }
 
-        _context.Orders.Add(order);
-        await _context.SaveChangesAsync();
+        context.Orders.Add(order);
+        await context.SaveChangesAsync();
 
         return CreatedAtAction(nameof(GetOrder), new { id = order.Id }, order);
     }
@@ -109,7 +102,7 @@ public class OrdersController : ControllerBase
     [HttpPut("{id}")]
     public async Task<IActionResult> PutOrder(int id, OrderDto orderDto)
     {
-        var order = await _context.Orders
+        var order = await context.Orders
             .Include(o => o.Items)
             .FirstOrDefaultAsync(o => o.Id == id);
 
@@ -119,7 +112,7 @@ public class OrdersController : ControllerBase
         }
 
         // Verify customer exists
-        var customer = await _context.Customers.FindAsync(orderDto.CustomerId);
+        var customer = await context.Customers.FindAsync(orderDto.CustomerId);
         if (customer == null)
         {
             return BadRequest("Customer not found.");
@@ -128,13 +121,13 @@ public class OrdersController : ControllerBase
         order.CustomerId = orderDto.CustomerId;
 
         // Remove existing order items
-        _context.OrderItems.RemoveRange(order.Items);
+        context.OrderItems.RemoveRange(order.Items);
 
         // Add new order items
         order.Items.Clear();
         foreach (var itemDto in orderDto.Items)
         {
-            var shopItem = await _context.ShopItems.FindAsync(itemDto.ShopItemId);
+            var shopItem = await context.ShopItems.FindAsync(itemDto.ShopItemId);
             if (shopItem == null)
             {
                 return BadRequest($"Shop item with ID {itemDto.ShopItemId} not found.");
@@ -152,7 +145,7 @@ public class OrdersController : ControllerBase
 
         try
         {
-            await _context.SaveChangesAsync();
+            await context.SaveChangesAsync();
         }
         catch (DbUpdateConcurrencyException)
         {
@@ -174,14 +167,14 @@ public class OrdersController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteOrder(int id)
     {
-        var order = await _context.Orders.FindAsync(id);
+        var order = await context.Orders.FindAsync(id);
         if (order == null)
         {
             return NotFound();
         }
 
-        _context.Orders.Remove(order);
-        await _context.SaveChangesAsync();
+        context.Orders.Remove(order);
+        await context.SaveChangesAsync();
 
         return NoContent();
     }
@@ -193,7 +186,7 @@ public class OrdersController : ControllerBase
     /// <returns>True if order exists</returns>
     private bool OrderExists(int id)
     {
-        return _context.Orders.Any(e => e.Id == id);
+        return context.Orders.Any(e => e.Id == id);
     }
 }
 

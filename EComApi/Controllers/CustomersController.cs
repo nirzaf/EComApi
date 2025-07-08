@@ -10,15 +10,8 @@ namespace EComApi.Controllers;
 /// </summary>
 [ApiController]
 [Route("api/[controller]")]
-public class CustomersController : ControllerBase
+public class CustomersController(EComDbContext context) : ControllerBase
 {
-    private readonly EComDbContext _context;
-
-    public CustomersController(EComDbContext context)
-    {
-        _context = context;
-    }
-
     /// <summary>
     /// Get all customers
     /// </summary>
@@ -26,7 +19,7 @@ public class CustomersController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Customer>>> GetCustomers()
     {
-        return await _context.Customers.ToListAsync();
+        return await context.Customers.ToListAsync();
     }
 
     /// <summary>
@@ -37,7 +30,7 @@ public class CustomersController : ControllerBase
     [HttpGet("{id}")]
     public async Task<ActionResult<Customer>> GetCustomer(int id)
     {
-        var customer = await _context.Customers
+        var customer = await context.Customers
             .Include(c => c.Orders)
             .FirstOrDefaultAsync(c => c.Id == id);
 
@@ -58,13 +51,13 @@ public class CustomersController : ControllerBase
     public async Task<ActionResult<Customer>> PostCustomer(Customer customer)
     {
         // Check if email already exists
-        if (await _context.Customers.AnyAsync(c => c.Email == customer.Email))
+        if (await context.Customers.AnyAsync(c => c.Email == customer.Email))
         {
             return BadRequest("A customer with this email already exists.");
         }
 
-        _context.Customers.Add(customer);
-        await _context.SaveChangesAsync();
+        context.Customers.Add(customer);
+        await context.SaveChangesAsync();
 
         return CreatedAtAction(nameof(GetCustomer), new { id = customer.Id }, customer);
     }
@@ -84,16 +77,16 @@ public class CustomersController : ControllerBase
         }
 
         // Check if email already exists for another customer
-        if (await _context.Customers.AnyAsync(c => c.Email == customer.Email && c.Id != id))
+        if (await context.Customers.AnyAsync(c => c.Email == customer.Email && c.Id != id))
         {
             return BadRequest("A customer with this email already exists.");
         }
 
-        _context.Entry(customer).State = EntityState.Modified;
+        context.Entry(customer).State = EntityState.Modified;
 
         try
         {
-            await _context.SaveChangesAsync();
+            await context.SaveChangesAsync();
         }
         catch (DbUpdateConcurrencyException)
         {
@@ -115,14 +108,14 @@ public class CustomersController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteCustomer(int id)
     {
-        var customer = await _context.Customers.FindAsync(id);
+        var customer = await context.Customers.FindAsync(id);
         if (customer == null)
         {
             return NotFound();
         }
 
-        _context.Customers.Remove(customer);
-        await _context.SaveChangesAsync();
+        context.Customers.Remove(customer);
+        await context.SaveChangesAsync();
 
         return NoContent();
     }
@@ -134,6 +127,6 @@ public class CustomersController : ControllerBase
     /// <returns>True if customer exists</returns>
     private bool CustomerExists(int id)
     {
-        return _context.Customers.Any(e => e.Id == id);
+        return context.Customers.Any(e => e.Id == id);
     }
 }

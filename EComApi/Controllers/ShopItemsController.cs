@@ -10,15 +10,8 @@ namespace EComApi.Controllers;
 /// </summary>
 [ApiController]
 [Route("api/[controller]")]
-public class ShopItemsController : ControllerBase
+public class ShopItemsController(EComDbContext context) : ControllerBase
 {
-    private readonly EComDbContext _context;
-
-    public ShopItemsController(EComDbContext context)
-    {
-        _context = context;
-    }
-
     /// <summary>
     /// Get all shop items
     /// </summary>
@@ -26,7 +19,7 @@ public class ShopItemsController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<ShopItem>>> GetShopItems()
     {
-        return await _context.ShopItems
+        return await context.ShopItems
             .Include(s => s.Categories)
             .ToListAsync();
     }
@@ -39,7 +32,7 @@ public class ShopItemsController : ControllerBase
     [HttpGet("{id}")]
     public async Task<ActionResult<ShopItem>> GetShopItem(int id)
     {
-        var shopItem = await _context.ShopItems
+        var shopItem = await context.ShopItems
             .Include(s => s.Categories)
             .FirstOrDefaultAsync(s => s.Id == id);
 
@@ -69,7 +62,7 @@ public class ShopItemsController : ControllerBase
         // Add categories if provided
         if (shopItemDto.CategoryIds != null && shopItemDto.CategoryIds.Any())
         {
-            var categories = await _context.ShopItemCategories
+            var categories = await context.ShopItemCategories
                 .Where(c => shopItemDto.CategoryIds.Contains(c.Id))
                 .ToListAsync();
             
@@ -79,8 +72,8 @@ public class ShopItemsController : ControllerBase
             }
         }
 
-        _context.ShopItems.Add(shopItem);
-        await _context.SaveChangesAsync();
+        context.ShopItems.Add(shopItem);
+        await context.SaveChangesAsync();
 
         return CreatedAtAction(nameof(GetShopItem), new { id = shopItem.Id }, shopItem);
     }
@@ -94,7 +87,7 @@ public class ShopItemsController : ControllerBase
     [HttpPut("{id}")]
     public async Task<IActionResult> PutShopItem(int id, ShopItemDto shopItemDto)
     {
-        var shopItem = await _context.ShopItems
+        var shopItem = await context.ShopItems
             .Include(s => s.Categories)
             .FirstOrDefaultAsync(s => s.Id == id);
 
@@ -111,7 +104,7 @@ public class ShopItemsController : ControllerBase
         shopItem.Categories.Clear();
         if (shopItemDto.CategoryIds != null && shopItemDto.CategoryIds.Any())
         {
-            var categories = await _context.ShopItemCategories
+            var categories = await context.ShopItemCategories
                 .Where(c => shopItemDto.CategoryIds.Contains(c.Id))
                 .ToListAsync();
             
@@ -123,7 +116,7 @@ public class ShopItemsController : ControllerBase
 
         try
         {
-            await _context.SaveChangesAsync();
+            await context.SaveChangesAsync();
         }
         catch (DbUpdateConcurrencyException)
         {
@@ -145,14 +138,14 @@ public class ShopItemsController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteShopItem(int id)
     {
-        var shopItem = await _context.ShopItems.FindAsync(id);
+        var shopItem = await context.ShopItems.FindAsync(id);
         if (shopItem == null)
         {
             return NotFound();
         }
 
-        _context.ShopItems.Remove(shopItem);
-        await _context.SaveChangesAsync();
+        context.ShopItems.Remove(shopItem);
+        await context.SaveChangesAsync();
 
         return NoContent();
     }
@@ -164,7 +157,7 @@ public class ShopItemsController : ControllerBase
     /// <returns>True if shop item exists</returns>
     private bool ShopItemExists(int id)
     {
-        return _context.ShopItems.Any(e => e.Id == id);
+        return context.ShopItems.Any(e => e.Id == id);
     }
 }
 

@@ -6,12 +6,8 @@ namespace EComApi.Data;
 /// <summary>
 /// Database context for the e-commerce application
 /// </summary>
-public class EComDbContext : DbContext
+public class EComDbContext(DbContextOptions<EComDbContext> options) : DbContext(options)
 {
-    public EComDbContext(DbContextOptions<EComDbContext> options) : base(options)
-    {
-    }
-
     /// <summary>
     /// DbSet for customers
     /// </summary>
